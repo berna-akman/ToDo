@@ -24,25 +24,8 @@ type boardController struct {
 	s presentation.BoardService
 }
 
-// @title Swagger To Do API
-// @version 1.0
-// @description This is a sample server To Do server.
-// @termsOfService http://swagger.io/terms/
-
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
-
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-
-// @host petstore.swagger.io
-// @BasePath /
-
 func NewBoardController(s presentation.BoardService, router *mux.Router) BoardController {
 	controller := &boardController{s}
-
-	// TODO: generic'leri kullan
 
 	//router := Application{Server: router}
 	//route := router.NewController(controller)
@@ -62,7 +45,7 @@ func (c *boardController) GetAll(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		panic(err)
 	}
-	// TODO: ortaklanabilir aynı sey yapıldıgı icin, middleware or func ile handle edebilirsin
+
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(boards)
 	if err != nil {
@@ -84,7 +67,7 @@ func (c *boardController) GetByID(w http.ResponseWriter, r *http.Request) error 
 	if err != nil {
 		panic(err)
 	}
-	return err
+	return nil
 }
 
 func (c *boardController) Create(w http.ResponseWriter, r *http.Request) error {
