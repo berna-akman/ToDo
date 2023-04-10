@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: to-do-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: to-do-api
+  template:
+    metadata:
+      labels:
+        app: to-do-api
+    spec:
+      containers:
+        - name: to-do-api
+          image: to-do-api
+          ports:
+            - containerPort: 8080
