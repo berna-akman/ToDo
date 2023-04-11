@@ -32,6 +32,9 @@ jobs:
         context: .
         push: true
         tags: bernaakman/to-do-api:latest
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}   
 
     - name: Deploy to Kubernetes
       uses: steebchen/kubectl@master
