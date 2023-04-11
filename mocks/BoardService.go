@@ -28,11 +28,11 @@ func (_m *BoardService) Create(_a0 board.Board) error {
 }
 
 // Delete provides a mock function with given fields: _a0
-func (_m *BoardService) Delete(_a0 int) error {
+func (_m *BoardService) Delete(_a0 uint) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
+	if rf, ok := ret.Get(0).(func(uint) error); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
@@ -68,15 +68,15 @@ func (_m *BoardService) GetAll() (*board.DTO, error) {
 }
 
 // GetByID provides a mock function with given fields: _a0
-func (_m *BoardService) GetByID(_a0 int) (*board.Board, error) {
+func (_m *BoardService) GetByID(_a0 uint) (*board.Board, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *board.Board
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int) (*board.Board, error)); ok {
+	if rf, ok := ret.Get(0).(func(uint) (*board.Board, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(int) *board.Board); ok {
+	if rf, ok := ret.Get(0).(func(uint) *board.Board); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
@@ -84,7 +84,7 @@ func (_m *BoardService) GetByID(_a0 int) (*board.Board, error) {
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int) error); ok {
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
