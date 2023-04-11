@@ -57,7 +57,7 @@ func (c *boardController) GetAll(w http.ResponseWriter, _ *http.Request) error {
 func (c *boardController) GetByID(w http.ResponseWriter, r *http.Request) error {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	b, err := c.s.GetByID(id)
+	b, err := c.s.GetByID(uint(id))
 	if err != nil {
 		w.WriteHeader(404)
 		return err
@@ -114,7 +114,7 @@ func (c *boardController) Delete(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	err = c.s.Delete(id)
+	err = c.s.Delete(uint(id))
 	if err != nil {
 		w.WriteHeader(400)
 		return err

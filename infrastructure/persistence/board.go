@@ -35,9 +35,9 @@ func (r BoardRepository) FindAll() (*board.DTO, error) {
 	}, nil
 }
 
-func (r BoardRepository) GetByID(id int) (*board.Board, error) {
+func (r BoardRepository) GetByID(id uint) (*board.Board, error) {
 	var b board.Board
-	return &b, r.db.Where("id = ?", id).First(&b).Error
+	return &b, r.db.Where("board_id = ?", id).First(&b).Error
 }
 
 func (r BoardRepository) Create(b board.Board) error {
@@ -45,9 +45,9 @@ func (r BoardRepository) Create(b board.Board) error {
 }
 
 func (r BoardRepository) Update(b board.Board) error {
-	return r.db.Model(&b).Updates(board.Board{ID: b.ID, Name: b.Name, Description: b.Description}).Error
+	return r.db.Model(&b).Where("board_id = ?", b.BoardID).Updates(board.Board{ID: b.ID, BoardID: b.BoardID, Name: b.Name, Description: b.Description}).Error
 }
 
-func (r BoardRepository) Delete(id int) error {
-	return r.db.Delete(board.Board{}, "id = ?", id).Error
+func (r BoardRepository) Delete(id uint) error {
+	return r.db.Where("board_id = ?", id).Delete(&board.Board{}).Error
 }
