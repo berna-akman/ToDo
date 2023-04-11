@@ -27,7 +27,7 @@ func (s boardService) GetAll() (*board.DTO, error) {
 		return nil, err
 	}
 
-	return &board.DTO{Board: boards, TotalCount: len(boards)}, nil
+	return boards, nil
 }
 
 func (s boardService) GetByID(id int) (*board.Board, error) {
@@ -44,7 +44,7 @@ func (s boardService) Create(b board.Board) error {
 }
 
 func (s boardService) Update(b board.Board) error {
-	_, err := s.r.GetByID(b.ID)
+	_, err := s.r.GetByID(int(b.ID))
 	if err != nil {
 		return errors.ErrorBoardNotFound
 	}

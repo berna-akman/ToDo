@@ -1,29 +1,23 @@
 package board
 
-type BoardRes struct {
-	DTO
-	Board
-	Boards
-}
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type DTO struct {
-	Board      Boards `json:"boards"`
-	TotalCount int    `json:"totalCount"`
+	Board []Board `json:"boards"`
+	Count int64   `json:"count"`
 }
-
-type Boards []Board
 
 type Board struct {
-	ID          int    `json:"id" gorm:"primaryKey;autoIncrement"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Status      Status `json:"status" gorm:"foreignKey:ID"`
-}
-
-type Status struct {
-	ID        uint32 `json:"id"`
-	IsActive  bool   `json:"isActive" gorm:"default=true"` // neden default true olmadı?
-	IsStarred bool   `json:"isStarred"`
+	CreatedAt   time.Time      `json:"created_at"`
+	UpdatedAt   time.Time      `json:"updated_at"`
+	DeletedAt   gorm.DeletedAt `json:"deleted_at" gorm:"index"`
+	ID          uint           `json:"id" gorm:"primaryKey"`
+	BoardID     uint           `json:"board_id" gorm:"index"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
 }
 
 type GetBoardRequest struct {

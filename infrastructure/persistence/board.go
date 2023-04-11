@@ -16,25 +16,38 @@ func NewBoardRepository(ds *DataSource) board.BoardRepository {
 	}
 }
 
-func (r *BoardRepository) FindAll() (board.Boards, error) {
-	// TODO: repo'dan count alabilirsin
-	var b board.Boards
-	return b, r.db.Find(&b).Error
+func (r BoardRepository) FindAll() (*board.DTO, error) {
+	var boards []board.Board
+	var count int64
+
+	err := r.db.Find(&boards).Error
+	if err != nil {
+		return &board.DTO{}, err
+	}
+
+	err = r.db.Model(&board.Board{}).Count(&count).Error
+	if err != nil {
+		return &board.DTO{}, err
+	}
+	return &board.DTO{
+		Board: boards,
+		Count: count,
+	}, nil
 }
 
-func (r *BoardRepository) GetByID(id int) (*board.Board, error) {
+func (r BoardRepository) GetByID(id int) (*board.Board, error) {
 	var b board.Board
 	return &b, r.db.Where("id = ?", id).First(&b).Error
 }
 
-func (r *BoardRepository) Create(b board.Board) error {
+func (r BoardRepository) Create(b board.Board) error {
 	return r.db.Create(&b).Error
 }
 
-func (r *BoardRepository) Update(b board.Board) error {
-	return r.db.Model(&b).Updates(board.Board{ID: b.ID, Name: b.Name, Description: b.Description, Status: b.Status}).Error
+func (r BoardRepository) Update(b board.Board) error {
+	return r.db.Model(&b).Updates(board.Board{ID: b.ID, Name: b.Name, Description: b.Description}).Error
 }
 
-func (r *BoardRepository) Delete(id int) error {
+func (r BoardRepository) Delete(id int) error {
 	return r.db.Delete(board.Board{}, "id = ?", id).Error
 }
