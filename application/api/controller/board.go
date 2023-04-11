@@ -40,7 +40,7 @@ func NewBoardController(s presentation.BoardService, router *mux.Router) BoardCo
 	return controller
 }
 
-func (c *boardController) GetAll(w http.ResponseWriter, r *http.Request) error {
+func (c *boardController) GetAll(w http.ResponseWriter, _ *http.Request) error {
 	boards, err := c.s.GetAll()
 	if err != nil {
 		panic(err)
@@ -127,54 +127,3 @@ func (c *boardController) Delete(w http.ResponseWriter, r *http.Request) error {
 	}
 	return nil
 }
-
-//func (c *boardController) GetAll(w http.ResponseWriter, r *http.Request) {
-//	boards, _ := c.s.GetAll()
-//	err := Encoder(w, boards)
-//	if err != nil {
-//		panic(err)
-//	}
-//}
-
-//func (c *boardController) GetByID(w http.ResponseWriter, r *http.Request) {
-//	vars := mux.Vars(r)
-//	id, _ := strconv.Atoi(vars["id"])
-//	b, err := c.s.GetByID(id)
-//	if err != nil {
-//		w.WriteHeader(404)
-//	}
-//	err = Encoder(w, b)
-//	if err != nil {
-//		return
-//	}
-//	return
-//}
-
-//func (c *boardController) Create(w http.ResponseWriter, r *http.Request) {
-//	b := board.Board{}
-//	err := json.NewDecoder(r.Body).Decode(&b)
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	err = c.s.Create(b)
-//	err = Encoder(w, err)
-//	if err != nil {
-//		return
-//	}
-//}
-
-//func (c *boardController) Delete(w http.ResponseWriter, r *http.Request) {
-//	var b *board.Board
-//	vars := mux.Vars(r)
-//	id, _ := strconv.Atoi(vars["id"])
-//
-//	err := c.s.Delete(id)
-//	if err != nil {
-//		return
-//	}
-//	err = Encoder(w, b)
-//	if err != nil {
-//		return
-//	}
-//}
