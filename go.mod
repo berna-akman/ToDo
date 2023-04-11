@@ -3,6 +3,7 @@ module to-do-api
 go 1.18
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
