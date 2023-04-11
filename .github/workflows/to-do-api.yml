@@ -29,15 +29,7 @@ jobs:
     steps:
         - name: Test
           run: go test -v ./...
-        - name: Build Docker image
-          uses: docker/build-push-action@v2
-          with:
-           context: .
-           push: true
-           tags: bernaakman/to-do-api:latest
-          env:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}   
+        
   deployment:
     runs-on: ubuntu-latest
     steps:
@@ -47,3 +39,12 @@ jobs:
             KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
           with:
             args: apply -f to-do-api.yaml -f service.yaml
+        - name: Build Docker image
+          uses: docker/build-push-action@v2
+          with:
+            context: .
+            push: true
+            tags: bernaakman/to-do-api:latest
+          env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}   
