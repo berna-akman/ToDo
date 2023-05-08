@@ -1,129 +1,103 @@
 package controller
 
 import (
-	"encoding/json"
-	"github.com/gorilla/mux"
-	httpSwagger "github.com/swaggo/http-swagger" // http-swagger middleware
-	"log"
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 	"to-do-api/domain/board"
-	. "to-do-api/internal/context"
 	"to-do-api/presentation"
 )
 
 type BoardController interface {
-	GetAll(w http.ResponseWriter, r *http.Request) error
-	GetByID(w http.ResponseWriter, r *http.Request) error
-	Create(w http.ResponseWriter, r *http.Request) error
-	Update(w http.ResponseWriter, r *http.Request) error
-	Delete(w http.ResponseWriter, r *http.Request) error
+	GetAllBoards(e echo.Context) error
+	GetBoardByID(e echo.Context) error
+	CreateBoard(e echo.Context) error
+	UpdateBoard(e echo.Context) error
+	DeleteBoard(e echo.Context) error
 }
 
 type boardController struct {
 	s presentation.BoardService
 }
 
-func NewBoardController(s presentation.BoardService, router *mux.Router) BoardController {
+func NewBoardController(s presentation.BoardService) BoardController {
 	controller := &boardController{s}
 
-	//router := Application{Server: router}
-	//route := router.NewController(controller)
-	router.Handle("/board", Handler(controller.GetAll)).Methods(http.MethodGet) // controller.getxxx??
-	router.Handle("/board/{id:[0-9]+}", Handler(controller.GetByID)).Methods(http.MethodGet)
-	router.Handle("/board", Handler(controller.Create)).Methods(http.MethodPost)
-	router.Handle("/board/{id:[0-9]+}", Handler(controller.Update)).Methods(http.MethodPut)
-	router.Handle("/board/{id:[0-9]+}", Handler(controller.Delete)).Methods(http.MethodDelete)
-
-	router.HandleFunc("/swagger/*", httpSwagger.WrapHandler) // The url pointing to API definition
+	// Create a new Echo instance
+	e := echo.New()
+	e.GET("/board", controller.GetAllBoards)
+	e.GET("/board/:id", controller.GetBoardByID)
+	e.POST("/board", controller.CreateBoard)
+	e.PUT("/board/:id", controller.UpdateBoard)
+	e.DELETE("/board/:id", controller.DeleteBoard)
+	err := e.Start(":8080")
+	if err != nil {
+		return nil
+	}
 
 	return controller
 }
 
-func (c *boardController) GetAll(w http.ResponseWriter, _ *http.Request) error {
-	boards, err := c.s.GetAll()
+func (c *boardController) GetAllBoards(e echo.Context) error {
+	boards, err := c.s.GetAllBoards()
 	if err != nil {
 		panic(err)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(boards)
-	if err != nil {
-		return err
-	}
-	return nil
+	e.Response().Header().Set("Content-Type", "application/json")
+	return e.JSON(http.StatusOK, boards)
 }
 
-func (c *boardController) GetByID(w http.ResponseWriter, r *http.Request) error {
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	b, err := c.s.GetByID(uint(id))
+func (c *boardController) GetBoardByID(e echo.Context) error {
+	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		w.WriteHeader(404)
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid ID")
 	}
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(b)
+
+	b, err := c.s.GetBoardByID(uint(id))
 	if err != nil {
-		panic(err)
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
-	return nil
+
+	e.Response().Header().Set("Content-Type", "application/json")
+	return e.JSON(http.StatusOK, b)
 }
 
-func (c *boardController) Create(w http.ResponseWriter, r *http.Request) error {
+func (c *boardController) CreateBoard(e echo.Context) error {
 	b := board.Board{}
-	err := json.NewDecoder(r.Body).Decode(&b)
+	err := e.Bind(&b)
 	if err != nil {
-		log.Fatal(err)
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	err = c.s.Create(b)
-	w.Header().Add("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(err)
+
+	err = c.s.CreateBoard(b)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return nil
+	return e.JSON(http.StatusOK, b)
 }
 
-func (c *boardController) Update(w http.ResponseWriter, r *http.Request) error {
-	var b *board.Board
-	err := json.NewDecoder(r.Body).Decode(&b)
-	if err != nil {
-		return err
+func (c *boardController) UpdateBoard(e echo.Context) error {
+	b := &board.Board{}
+	if err := e.Bind(b); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	err = c.s.Update(*b)
-	if err != nil {
-		w.WriteHeader(400)
-		return err
+	if err := c.s.UpdateBoard(*b); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(b)
-	if err != nil {
-		return err
-	}
-	return nil
+	return e.JSON(http.StatusOK, b)
 }
 
-func (c *boardController) Delete(w http.ResponseWriter, r *http.Request) error {
-	var b *board.Board
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+func (c *boardController) DeleteBoard(e echo.Context) error {
+	id, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	err = c.s.Delete(uint(id))
+	err = c.s.DeleteBoard(uint(id))
 	if err != nil {
-		w.WriteHeader(400)
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(b)
-	if err != nil {
-		return err
-	}
-	return nil
+	return e.JSON(http.StatusOK, nil)
 }

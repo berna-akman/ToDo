@@ -22,7 +22,7 @@ type cardController struct {
 	s presentation.CardService
 }
 
-func NewCardController(s presentation.CardService, router *mux.Router) CardController {
+func NewCardController(s presentation.CardService) CardController {
 	controller := &cardController{s}
 
 	//router.HandleFunc("/card", controller.GetAll).Methods(http.MethodGet)

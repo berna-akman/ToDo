@@ -6,11 +6,11 @@ import (
 )
 
 type BoardService interface {
-	GetAll() (*board.DTO, error)
-	GetByID(uint) (*board.Board, error)
-	Create(board.Board) error
-	Update(board.Board) error
-	Delete(uint) error
+	GetAllBoards() (*board.DTO, error)
+	GetBoardByID(uint) (*board.Board, error)
+	CreateBoard(board.Board) error
+	UpdateBoard(board.Board) error
+	DeleteBoard(uint) error
 }
 
 type boardService struct {
@@ -21,7 +21,7 @@ func NewBoardService(repository board.BoardRepository) BoardService {
 	return boardService{repository}
 }
 
-func (s boardService) GetAll() (*board.DTO, error) {
+func (s boardService) GetAllBoards() (*board.DTO, error) {
 	boards, err := s.r.FindAll()
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (s boardService) GetAll() (*board.DTO, error) {
 	return boards, nil
 }
 
-func (s boardService) GetByID(id uint) (*board.Board, error) {
+func (s boardService) GetBoardByID(id uint) (*board.Board, error) {
 	b, err := s.r.GetByID(id)
 	if err != nil {
 		return nil, errors.ErrorBoardNotFound
@@ -39,11 +39,11 @@ func (s boardService) GetByID(id uint) (*board.Board, error) {
 	return b, nil
 }
 
-func (s boardService) Create(b board.Board) error {
+func (s boardService) CreateBoard(b board.Board) error {
 	return s.r.Create(b)
 }
 
-func (s boardService) Update(b board.Board) error {
+func (s boardService) UpdateBoard(b board.Board) error {
 	_, err := s.r.GetByID(b.BoardID)
 	if err != nil {
 		return errors.ErrorBoardNotFound
@@ -52,7 +52,7 @@ func (s boardService) Update(b board.Board) error {
 	return s.r.Update(b)
 }
 
-func (s boardService) Delete(id uint) error {
+func (s boardService) DeleteBoard(id uint) error {
 	_, err := s.r.GetByID(id)
 	if err != nil {
 		return errors.ErrorBoardNotFound
