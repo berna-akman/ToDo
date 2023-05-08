@@ -75,7 +75,7 @@ func Test_boardService_GetByID(t *testing.T) {
 	}
 
 	var got *board.Board
-	got, err = s.GetByID(4)
+	got, err = s.GetBoardByID(4)
 	if err != nil {
 		panic(err)
 	}
