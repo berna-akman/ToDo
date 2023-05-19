@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	board "to-do-api/domain/board"
+	board "to-do-api/pg/domain/board"
 
 	mock "github.com/stretchr/testify/mock"
 )

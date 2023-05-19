@@ -1,10 +1,14 @@
 package main
 
 import (
-	"to-do-api/application/api/controller"
-	"to-do-api/infrastructure/config"
-	"to-do-api/infrastructure/persistence"
-	"to-do-api/presentation"
+	"github.com/labstack/echo/v4"
+	"to-do-api/cb/application/api/controller"
+	"to-do-api/cb/infrastructure/persistence"
+	"to-do-api/cb/presentation"
+	controller2 "to-do-api/pg/application/api/controller"
+	"to-do-api/pg/infrastructure/config"
+	persistence2 "to-do-api/pg/infrastructure/persistence"
+	presentation2 "to-do-api/pg/presentation"
 )
 
 func main() {
@@ -13,17 +17,34 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	pg, err := persistence.Connect(*cfg)
+	pg, err := persistence2.Connect(*cfg)
 	if err != nil {
 		panic(err)
 	}
+	cb, err := persistence.ConnectCB()
 
-	boardRepository := persistence.NewBoardRepository(pg)
-	cardRepository := persistence.NewCardRepository(pg)
-	boardService := presentation.NewBoardService(boardRepository)
-	cardService := presentation.NewCardService(cardRepository)
-	controller.NewBoardController(boardService)
-	controller.NewCardController(cardService)
+	e := echo.New()
+	boardRepository := persistence2.NewBoardRepository(pg)
+	boardService := presentation2.NewBoardService(boardRepository)
+	controller2.NewBoardController(boardService, e)
+	//cardRepository := persistence2.NewCardRepository(pg)
+	//cardService := presentation2.NewCardService(cardRepository)
+	//controller2.NewCardController(cardService)
+
+	boardRepositoryCB := persistence.NewBoardRepository(cb)
+	boardServiceCB := presentation.NewBoardService(boardRepositoryCB)
+	controller.NewBoardController(boardServiceCB, e)
+
+	err = e.Start(":8080")
+	if err != nil {
+		panic(err)
+	}
 }
 
-// TODO: cb migration, validations
+// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak)
+
+// TODO: column olusturma, silme
+
+// TODO: board'ları column'a gore filtrelemek icin query'den gonder (GET)
+
+// TODO: card board'un bir column'una ait olacak iliskinisi kuralım

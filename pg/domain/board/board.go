@@ -22,6 +22,8 @@ type Board struct {
 	Description string         `json:"description"`
 }
 
+// TODO: default columnlar olsun board'larda (const)
+
 type GetBoardRequest struct {
 	ID int `json:"id"`
 }

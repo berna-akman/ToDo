@@ -6,7 +6,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"time"
-	"to-do-api/infrastructure/config"
+	"to-do-api/pg/infrastructure/config"
 )
 
 type DataSource struct {

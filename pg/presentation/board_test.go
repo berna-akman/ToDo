@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 	"testing"
 	"time"
-	"to-do-api/domain/board"
-	"to-do-api/infrastructure/persistence"
+	"to-do-api/pg/domain/board"
+	persistence2 "to-do-api/pg/infrastructure/persistence"
 )
 
 /*func Test_boardService_GetBoards(t *testing.T) {
@@ -51,9 +51,9 @@ import (
 }*/
 
 func Test_boardService_GetByID(t *testing.T) {
-	pg, mock, err := persistence.InitForTest()
+	pg, mock, err := persistence2.InitForTest()
 	assert.Nil(t, err)
-	repository := persistence.NewBoardRepository(pg)
+	repository := persistence2.NewBoardRepository(pg)
 	tt := time.Unix(1679923648, 0).UTC()
 
 	columns := []string{"created_at", "updated_at", "deleted_at", "id", "board_id", "name", "description"}

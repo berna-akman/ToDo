@@ -3,8 +3,7 @@
 package mocks
 
 import (
-	http "net/http"
-
+	echo "github.com/labstack/echo/v4"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,13 +12,13 @@ type BoardController struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: w, r
-func (_m *BoardController) Create(w http.ResponseWriter, r *http.Request) error {
-	ret := _m.Called(w, r)
+// CreateBoard provides a mock function with given fields: e
+func (_m *BoardController) CreateBoard(e echo.Context) error {
+	ret := _m.Called(e)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(http.ResponseWriter, *http.Request) error); ok {
-		r0 = rf(w, r)
+	if rf, ok := ret.Get(0).(func(echo.Context) error); ok {
+		r0 = rf(e)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -27,13 +26,13 @@ func (_m *BoardController) Create(w http.ResponseWriter, r *http.Request) error 
 	return r0
 }
 
-// Delete provides a mock function with given fields: w, r
-func (_m *BoardController) Delete(w http.ResponseWriter, r *http.Request) error {
-	ret := _m.Called(w, r)
+// DeleteBoard provides a mock function with given fields: e
+func (_m *BoardController) DeleteBoard(e echo.Context) error {
+	ret := _m.Called(e)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(http.ResponseWriter, *http.Request) error); ok {
-		r0 = rf(w, r)
+	if rf, ok := ret.Get(0).(func(echo.Context) error); ok {
+		r0 = rf(e)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -41,13 +40,13 @@ func (_m *BoardController) Delete(w http.ResponseWriter, r *http.Request) error 
 	return r0
 }
 
-// GetAll provides a mock function with given fields: w, r
-func (_m *BoardController) GetAll(w http.ResponseWriter, r *http.Request) error {
-	ret := _m.Called(w, r)
+// GetAllBoards provides a mock function with given fields: e
+func (_m *BoardController) GetAllBoards(e echo.Context) error {
+	ret := _m.Called(e)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(http.ResponseWriter, *http.Request) error); ok {
-		r0 = rf(w, r)
+	if rf, ok := ret.Get(0).(func(echo.Context) error); ok {
+		r0 = rf(e)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -55,13 +54,13 @@ func (_m *BoardController) GetAll(w http.ResponseWriter, r *http.Request) error 
 	return r0
 }
 
-// GetByID provides a mock function with given fields: w, r
-func (_m *BoardController) GetByID(w http.ResponseWriter, r *http.Request) error {
-	ret := _m.Called(w, r)
+// GetBoardByID provides a mock function with given fields: e
+func (_m *BoardController) GetBoardByID(e echo.Context) error {
+	ret := _m.Called(e)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(http.ResponseWriter, *http.Request) error); ok {
-		r0 = rf(w, r)
+	if rf, ok := ret.Get(0).(func(echo.Context) error); ok {
+		r0 = rf(e)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -69,13 +68,13 @@ func (_m *BoardController) GetByID(w http.ResponseWriter, r *http.Request) error
 	return r0
 }
 
-// Update provides a mock function with given fields: w, r
-func (_m *BoardController) Update(w http.ResponseWriter, r *http.Request) error {
-	ret := _m.Called(w, r)
+// UpdateBoard provides a mock function with given fields: e
+func (_m *BoardController) UpdateBoard(e echo.Context) error {
+	ret := _m.Called(e)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(http.ResponseWriter, *http.Request) error); ok {
-		r0 = rf(w, r)
+	if rf, ok := ret.Get(0).(func(echo.Context) error); ok {
+		r0 = rf(e)
 	} else {
 		r0 = ret.Error(0)
 	}

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"to-do-api/domain/card"
-	"to-do-api/presentation"
+	"to-do-api/pg/domain/card"
+	"to-do-api/pg/presentation"
 )
 
 type CardContext struct {

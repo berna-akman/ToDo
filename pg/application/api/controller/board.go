@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
-	"to-do-api/domain/board"
-	"to-do-api/presentation"
+	"to-do-api/pg/domain/board"
+	"to-do-api/pg/presentation"
 )
 
 type BoardController interface {
@@ -20,20 +20,14 @@ type boardController struct {
 	s presentation.BoardService
 }
 
-func NewBoardController(s presentation.BoardService) BoardController {
+func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardController {
 	controller := &boardController{s}
 
-	// Create a new Echo instance
-	e := echo.New()
-	e.GET("/board", controller.GetAllBoards)
-	e.GET("/board/:id", controller.GetBoardByID)
-	e.POST("/board", controller.CreateBoard)
-	e.PUT("/board/:id", controller.UpdateBoard)
-	e.DELETE("/board/:id", controller.DeleteBoard)
-	err := e.Start(":8080")
-	if err != nil {
-		return nil
-	}
+	e.GET("/pg/board", controller.GetAllBoards)
+	e.GET("/pg/board/:id", controller.GetBoardByID)
+	e.POST("/pg/board", controller.CreateBoard)
+	e.PUT("/pg/board/:id", controller.UpdateBoard)
+	e.DELETE("/pg/board/:id", controller.DeleteBoard)
 
 	return controller
 }

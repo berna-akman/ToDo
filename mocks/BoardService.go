@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	board "to-do-api/domain/board"
+	board "to-do-api/pg/domain/board"
 
 	mock "github.com/stretchr/testify/mock"
 )
@@ -13,8 +13,8 @@ type BoardService struct {
 	mock.Mock
 }
 
-// Create provides a mock function with given fields: _a0
-func (_m *BoardService) Create(_a0 board.Board) error {
+// CreateBoard provides a mock function with given fields: _a0
+func (_m *BoardService) CreateBoard(_a0 board.Board) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
@@ -27,8 +27,8 @@ func (_m *BoardService) Create(_a0 board.Board) error {
 	return r0
 }
 
-// Delete provides a mock function with given fields: _a0
-func (_m *BoardService) Delete(_a0 uint) error {
+// DeleteBoard provides a mock function with given fields: _a0
+func (_m *BoardService) DeleteBoard(_a0 uint) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
@@ -41,8 +41,8 @@ func (_m *BoardService) Delete(_a0 uint) error {
 	return r0
 }
 
-// GetAll provides a mock function with given fields:
-func (_m *BoardService) GetAll() (*board.DTO, error) {
+// GetAllBoards provides a mock function with given fields:
+func (_m *BoardService) GetAllBoards() (*board.DTO, error) {
 	ret := _m.Called()
 
 	var r0 *board.DTO
@@ -67,8 +67,8 @@ func (_m *BoardService) GetAll() (*board.DTO, error) {
 	return r0, r1
 }
 
-// GetByID provides a mock function with given fields: _a0
-func (_m *BoardService) GetByID(_a0 uint) (*board.Board, error) {
+// GetBoardByID provides a mock function with given fields: _a0
+func (_m *BoardService) GetBoardByID(_a0 uint) (*board.Board, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *board.Board
@@ -93,8 +93,8 @@ func (_m *BoardService) GetByID(_a0 uint) (*board.Board, error) {
 	return r0, r1
 }
 
-// Update provides a mock function with given fields: _a0
-func (_m *BoardService) Update(_a0 board.Board) error {
+// UpdateBoard provides a mock function with given fields: _a0
+func (_m *BoardService) UpdateBoard(_a0 board.Board) error {
 	ret := _m.Called(_a0)
 
 	var r0 error

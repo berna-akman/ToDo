@@ -1,16 +1,17 @@
 package presentation
 
 import (
-	"to-do-api/domain/board"
+	"github.com/google/uuid"
+	"to-do-api/cb/domain/board"
 	"to-do-api/internal/errors"
 )
 
 type BoardService interface {
-	GetAllBoards() (*board.DTO, error)
-	GetBoardByID(uint) (*board.Board, error)
-	CreateBoard(board.Board) error
+	GetAllBoards() (*[]board.Board, error)
+	GetBoardByID(string) (*board.Board, error)
+	CreateBoard(board.Board) (string, error)
 	UpdateBoard(board.Board) error
-	DeleteBoard(uint) error
+	DeleteBoard(string) error
 }
 
 type boardService struct {
@@ -21,7 +22,7 @@ func NewBoardService(repository board.BoardRepository) BoardService {
 	return boardService{repository}
 }
 
-func (s boardService) GetAllBoards() (*board.DTO, error) {
+func (s boardService) GetAllBoards() (*[]board.Board, error) {
 	boards, err := s.r.FindAll()
 	if err != nil {
 		return nil, err
@@ -30,7 +31,7 @@ func (s boardService) GetAllBoards() (*board.DTO, error) {
 	return boards, nil
 }
 
-func (s boardService) GetBoardByID(id uint) (*board.Board, error) {
+func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 	b, err := s.r.GetByID(id)
 	if err != nil {
 		return nil, errors.ErrorBoardNotFound
@@ -39,12 +40,13 @@ func (s boardService) GetBoardByID(id uint) (*board.Board, error) {
 	return b, nil
 }
 
-func (s boardService) CreateBoard(b board.Board) error {
+func (s boardService) CreateBoard(b board.Board) (string, error) {
+	b.ID = uuid.NewString()
 	return s.r.Create(b)
 }
 
 func (s boardService) UpdateBoard(b board.Board) error {
-	_, err := s.r.GetByID(b.BoardID)
+	_, err := s.r.GetByID(b.ID)
 	if err != nil {
 		return errors.ErrorBoardNotFound
 	}
@@ -52,7 +54,7 @@ func (s boardService) UpdateBoard(b board.Board) error {
 	return s.r.Update(b)
 }
 
-func (s boardService) DeleteBoard(id uint) error {
+func (s boardService) DeleteBoard(id string) error {
 	_, err := s.r.GetByID(id)
 	if err != nil {
 		return errors.ErrorBoardNotFound
