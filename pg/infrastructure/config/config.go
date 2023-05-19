@@ -25,7 +25,7 @@ func InitConfig() (*Postgres, error) {
 	// TODO: set env
 	viper.SetConfigName("secrets")
 	viper.SetConfigType("json")
-	viper.AddConfigPath("resource")
+	viper.AddConfigPath("pg/resource")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
