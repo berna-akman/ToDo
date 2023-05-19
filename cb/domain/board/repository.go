@@ -3,7 +3,7 @@ package board
 type BoardRepository interface {
 	FindAll() (*[]Board, error)
 	GetByID(string) (*Board, error)
-	Create(Board) (string, error)
+	Create(Board) (*CreateResponse, error)
 	Update(Board) error
 	Delete(string) error
 }

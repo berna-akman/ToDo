@@ -9,7 +9,7 @@ import (
 type BoardService interface {
 	GetAllBoards() (*[]board.Board, error)
 	GetBoardByID(string) (*board.Board, error)
-	CreateBoard(board.Board) (string, error)
+	CreateBoard(board.Board) (*board.CreateResponse, error)
 	UpdateBoard(board.Board) error
 	DeleteBoard(string) error
 }
@@ -40,7 +40,7 @@ func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 	return b, nil
 }
 
-func (s boardService) CreateBoard(b board.Board) (string, error) {
+func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	b.ID = uuid.NewString()
 	return s.r.Create(b)
 }
