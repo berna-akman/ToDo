@@ -41,7 +41,7 @@ func main() {
 	}
 }
 
-// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak)
+// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak) --- done
 
 // TODO: column olusturma, silme
 

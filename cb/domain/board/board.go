@@ -4,7 +4,8 @@ type Board struct {
 	ID          string   `json:"id"`
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
-	Column      []string `json:"columns"` // TODO: default tagi bulamadım?
+	Column      []string `json:"columns"`
+	Status      string   `json:"status"`
 }
 
 type CreateResponse struct {

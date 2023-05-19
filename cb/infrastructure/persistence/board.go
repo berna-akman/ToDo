@@ -61,7 +61,7 @@ func (r BoardRepository) GetByID(id string) (*board.Board, error) {
 }
 
 func (r BoardRepository) Create(b board.Board) (*board.CreateResponse, error) {
-	_, err := r.collection.Insert(b.ID, b, nil)
+	_, err := r.collection.Upsert(b.ID, b, nil)
 	if err != nil {
 		fmt.Println("Failed to create document:", err)
 		return nil, err
@@ -95,4 +95,13 @@ func (r BoardRepository) Delete(id string) error {
 	}
 
 	return nil
+}
+
+func (r BoardRepository) AddColumn(b board.Board) ([]string, error) {
+	_, err := r.bucket.DefaultCollection().Upsert(b.ID, b.Column, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return b.Column, nil
 }

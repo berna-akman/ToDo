@@ -14,6 +14,10 @@ type BoardService interface {
 	DeleteBoard(string) error
 }
 
+var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
+
+const defaultStatus = "To Do"
+
 type boardService struct {
 	r board.BoardRepository
 }
@@ -42,6 +46,17 @@ func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 
 func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	b.ID = uuid.NewString()
+	if len(b.Column) > 0 {
+		col, err := s.r.AddColumn(b)
+		b.Status = col[0]
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		b.Column = defaultColumns
+		b.Status = defaultStatus
+	}
+
 	return s.r.Create(b)
 }
 
