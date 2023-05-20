@@ -41,9 +41,9 @@ func main() {
 	}
 }
 
-// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak) --- done
+// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak) --- done (status eklendi)
 
-// TODO: column olusturma, silme
+// TODO: column olusturma*, silme --- board create ederken kullanıcı isterse column ekleyebiliyor
 
 // TODO: board'ları column'a gore filtrelemek icin query'den gonder (GET)
 

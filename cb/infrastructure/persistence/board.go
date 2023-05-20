@@ -60,7 +60,7 @@ func (r BoardRepository) GetByID(id string) (*board.Board, error) {
 	return &b, nil
 }
 
-func (r BoardRepository) Create(b board.Board) (*board.CreateResponse, error) {
+func (r BoardRepository) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	_, err := r.collection.Upsert(b.ID, b, nil)
 	if err != nil {
 		fmt.Println("Failed to create document:", err)
@@ -104,4 +104,14 @@ func (r BoardRepository) AddColumn(b board.Board) ([]string, error) {
 	}
 
 	return b.Column, nil
+}
+
+func (r BoardRepository) CreateCard(b board.Board) (*board.CreateResponse, error) {
+	_, err := r.collection.Upsert(b.ID, b, nil)
+	if err != nil {
+		fmt.Println("Failed to create document:", err)
+		return nil, err
+	}
+
+	return &board.CreateResponse{ID: b.Card[len(b.Card)-1].ID}, nil
 }

@@ -72,8 +72,8 @@ package controller
 //			c := &boardController{
 //				s: tt.fields.s,
 //			}
-//			if err := c.Create(tt.args.w, tt.args.r); (err != nil) != tt.wantErr {
-//				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+//			if err := c.CreateBoard(tt.args.w, tt.args.r); (err != nil) != tt.wantErr {
+//				t.Errorf("CreateBoard() error = %v, wantErr %v", err, tt.wantErr)
 //			}
 //		})
 //	}

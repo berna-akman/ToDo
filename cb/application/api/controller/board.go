@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"to-do-api/cb/domain/board"
@@ -13,6 +14,7 @@ type BoardController interface {
 	CreateBoard(e echo.Context) error
 	UpdateBoard(e echo.Context) error
 	DeleteBoard(e echo.Context) error
+	CreateCard(e echo.Context) error
 }
 
 type boardController struct {
@@ -27,6 +29,8 @@ func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardControll
 	e.POST("/cb/board", controller.CreateBoard)
 	e.PUT("/cb/board/:id", controller.UpdateBoard)
 	e.DELETE("/cb/board/:id", controller.DeleteBoard)
+
+	e.POST("/cb/board/:id/card", controller.CreateCard)
 
 	return controller
 }
@@ -87,4 +91,27 @@ func (c *boardController) DeleteBoard(e echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return e.JSON(http.StatusOK, nil)
+}
+
+func (c *boardController) CreateCard(e echo.Context) error {
+	card := board.Card{}
+	err := e.Bind(&card)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	boardId := e.Param("id")
+	b, err := c.s.GetBoardByID(boardId)
+	card.ID = uuid.NewString()
+	b.Card = append(b.Card, card)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, err.Error())
+	}
+
+	id, err := c.s.CreateCard(*b)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return e.JSON(http.StatusOK, id)
 }

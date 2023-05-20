@@ -12,11 +12,10 @@ type BoardService interface {
 	CreateBoard(board.Board) (*board.CreateResponse, error)
 	UpdateBoard(board.Board) error
 	DeleteBoard(string) error
+	CreateCard(board.Board) (*board.CreateResponse, error)
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
-
-const defaultStatus = "To Do"
 
 type boardService struct {
 	r board.BoardRepository
@@ -47,17 +46,15 @@ func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	b.ID = uuid.NewString()
 	if len(b.Column) > 0 {
-		col, err := s.r.AddColumn(b)
-		b.Status = col[0]
+		_, err := s.r.AddColumn(b)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		b.Column = defaultColumns
-		b.Status = defaultStatus
 	}
 
-	return s.r.Create(b)
+	return s.r.CreateBoard(b)
 }
 
 func (s boardService) UpdateBoard(b board.Board) error {
@@ -75,4 +72,8 @@ func (s boardService) DeleteBoard(id string) error {
 		return errors.ErrorBoardNotFound
 	}
 	return s.r.Delete(id)
+}
+
+func (s boardService) CreateCard(b board.Board) (*board.CreateResponse, error) {
+	return s.r.CreateCard(b)
 }
