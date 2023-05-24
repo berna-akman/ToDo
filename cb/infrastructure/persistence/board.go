@@ -71,15 +71,7 @@ func (r BoardRepository) CreateBoard(b board.Board) (*board.CreateResponse, erro
 }
 
 func (r BoardRepository) Update(b board.Board) error {
-	board := board.Board{
-		ID:          b.ID,
-		Name:        b.Name,
-		Description: b.Description,
-		Column:      b.Column,
-		Card:        b.Card,
-	}
-
-	_, err := r.bucket.DefaultCollection().Upsert(b.ID, board, nil)
+	_, err := r.bucket.DefaultCollection().Upsert(b.ID, b, nil)
 	if err != nil {
 		return err
 	}
