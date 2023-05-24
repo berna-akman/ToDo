@@ -107,6 +107,7 @@ func (c *boardController) CreateCard(e echo.Context) error {
 		return errors.ErrorBoardNotFound
 	}
 	card.ID = uuid.NewString()
+	card.Status = b.Column[0]
 	b.Card = append(b.Card, card)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
