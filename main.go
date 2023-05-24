@@ -21,13 +21,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cb, err := persistence.ConnectCB()
 
 	e := echo.New()
 	boardRepository := persistence2.NewBoardRepository(pg)
 	boardService := presentation2.NewBoardService(boardRepository)
 	controller2.NewBoardController(boardService, e)
 
+	cb, err := persistence.ConnectCB()
 	boardRepositoryCB := persistence.NewBoardRepository(cb)
 	boardServiceCB := presentation.NewBoardService(boardRepositoryCB)
 	controller.NewBoardController(boardServiceCB, e)
