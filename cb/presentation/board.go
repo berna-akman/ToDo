@@ -53,6 +53,7 @@ func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) 
 }
 
 func (s boardService) UpdateBoard(b board.Board) error {
+	// TODO: Accept id from path when updating
 	_, err := s.r.GetByID(b.ID)
 	if err != nil {
 		return errors.ErrorBoardNotFound

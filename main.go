@@ -38,8 +38,6 @@ func main() {
 	}
 }
 
-// TODO: board - update (columns, desc, name vs)
-
 // TODO: card board'un bir column'una ait olacak iliskinisi kuralım
 
 // TODO: board id ve column ismi ile ilgili column o boarddan silinsin
