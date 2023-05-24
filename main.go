@@ -27,9 +27,6 @@ func main() {
 	boardRepository := persistence2.NewBoardRepository(pg)
 	boardService := presentation2.NewBoardService(boardRepository)
 	controller2.NewBoardController(boardService, e)
-	//cardRepository := persistence2.NewCardRepository(pg)
-	//cardService := presentation2.NewCardService(cardRepository)
-	//controller2.NewCardController(cardService)
 
 	boardRepositoryCB := persistence.NewBoardRepository(cb)
 	boardServiceCB := presentation.NewBoardService(boardRepositoryCB)
@@ -41,10 +38,12 @@ func main() {
 	}
 }
 
-// TODO: board'lara default degerlerle column arrayi ekleme (column isimleri tutulacak) --- done (status eklendi)
+// TODO: board - update (columns, desc, name vs)
 
-// TODO: column olusturma*, silme --- board create ederken kullanıcı isterse column ekleyebiliyor
+// TODO: card board'un bir column'una ait olacak iliskinisi kuralım
+
+// TODO: board id ve column ismi ile ilgili column o boarddan silinsin
 
 // TODO: board'ları column'a gore filtrelemek icin query'den gonder (GET)
 
-// TODO: card board'un bir column'una ait olacak iliskinisi kuralım
+// card bucket olustursam olusan uuid'leri board'a verebilir miyim? referans verip iki bucket arasındaki iliskiyi kurabilir miyim?

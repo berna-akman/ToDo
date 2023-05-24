@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"to-do-api/cb/domain/board"
 	"to-do-api/cb/presentation"
+	"to-do-api/internal/errors"
 )
 
 type BoardController interface {
@@ -102,6 +103,9 @@ func (c *boardController) CreateCard(e echo.Context) error {
 
 	boardId := e.Param("id")
 	b, err := c.s.GetBoardByID(boardId)
+	if err != nil {
+		return errors.ErrorBoardNotFound
+	}
 	card.ID = uuid.NewString()
 	b.Card = append(b.Card, card)
 	if err != nil {

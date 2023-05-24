@@ -6,6 +6,5 @@ type BoardRepository interface {
 	CreateBoard(Board) (*CreateResponse, error)
 	Update(Board) error
 	Delete(string) error
-	AddColumn(Board) ([]string, error)
 	CreateCard(Board) (*CreateResponse, error)
 }

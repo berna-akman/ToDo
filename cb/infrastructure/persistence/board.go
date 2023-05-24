@@ -97,15 +97,6 @@ func (r BoardRepository) Delete(id string) error {
 	return nil
 }
 
-func (r BoardRepository) AddColumn(b board.Board) ([]string, error) {
-	_, err := r.bucket.DefaultCollection().Upsert(b.ID, b.Column, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	return b.Column, nil
-}
-
 func (r BoardRepository) CreateCard(b board.Board) (*board.CreateResponse, error) {
 	_, err := r.collection.Upsert(b.ID, b, nil)
 	if err != nil {

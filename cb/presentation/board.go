@@ -45,12 +45,7 @@ func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 
 func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	b.ID = uuid.NewString()
-	if len(b.Column) > 0 {
-		_, err := s.r.AddColumn(b)
-		if err != nil {
-			return nil, err
-		}
-	} else {
+	if len(b.Column) == 0 {
 		b.Column = defaultColumns
 	}
 
