@@ -10,7 +10,7 @@ type BoardService interface {
 	GetAllBoards() (*[]board.Board, error)
 	GetBoardByID(string) (*board.Board, error)
 	CreateBoard(board.Board) (*board.CreateResponse, error)
-	UpdateBoard(board.Board) error
+	UpdateBoard(string, board.Board) error
 	DeleteBoard(string) error
 	CreateCard(board.Board) (*board.CreateResponse, error)
 }
@@ -66,14 +66,8 @@ func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) 
 	return s.r.CreateBoard(b)
 }
 
-func (s boardService) UpdateBoard(b board.Board) error {
-	// TODO: Accept id from path when updating
-	_, err := s.r.GetByID(b.ID)
-	if err != nil {
-		return errors.ErrorBoardNotFound
-	}
-
-	return s.r.Update(b)
+func (s boardService) UpdateBoard(boardID string, b board.Board) error {
+	return s.r.Update(boardID, b)
 }
 
 func (s boardService) DeleteBoard(id string) error {

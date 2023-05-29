@@ -78,11 +78,12 @@ func (c *boardController) UpdateBoard(e echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := c.s.UpdateBoard(*b); err != nil {
+	id := e.Param("id")
+	if err := c.s.UpdateBoard(id, *b); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return e.JSON(http.StatusOK, b)
+	return e.JSON(http.StatusOK, nil)
 }
 
 func (c *boardController) DeleteBoard(e echo.Context) error {

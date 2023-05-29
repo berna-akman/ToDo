@@ -70,8 +70,9 @@ func (r BoardRepository) CreateBoard(b board.Board) (*board.CreateResponse, erro
 	return &board.CreateResponse{ID: b.ID}, nil
 }
 
-func (r BoardRepository) Update(b board.Board) error {
-	_, err := r.bucket.DefaultCollection().Upsert(b.ID, b, nil)
+func (r BoardRepository) Update(boardID string, b board.Board) error {
+	// TODO: How can I replace with only values from request body
+	_, err := r.bucket.DefaultCollection().Replace(boardID, b, nil)
 	if err != nil {
 		return err
 	}
