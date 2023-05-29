@@ -45,8 +45,22 @@ func (s boardService) GetBoardByID(id string) (*board.Board, error) {
 
 func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) {
 	b.ID = uuid.NewString()
-	if len(b.Column) == 0 {
-		b.Column = defaultColumns
+	if len(b.Columns) == 0 {
+		// Set default columns
+		b.Columns = make([]board.Column, len(defaultColumns))
+		for i := range defaultColumns {
+			column := board.Column{
+				ID:    uuid.NewString(),
+				Name:  defaultColumns[i],
+				Cards: make([]board.Card, 0),
+			}
+			b.Columns[i] = column
+		}
+	} else {
+		for i := range b.Columns {
+			b.Columns[i].ID = uuid.NewString()
+			b.Columns[i].Cards = make([]board.Card, 0)
+		}
 	}
 
 	return s.r.CreateBoard(b)
