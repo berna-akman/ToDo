@@ -103,18 +103,7 @@ func (c *boardController) CreateCard(e echo.Context) error {
 	}
 
 	boardId := e.Param("id")
-	b, err := c.s.GetBoardByID(boardId)
-	if err != nil {
-		return errors.ErrorBoardNotFound
-	}
-	card.ID = uuid.NewString()
-	card.Status = b.Column[0]
-	b.Card = append(b.Card, card)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusNotFound, err.Error())
-	}
-
-	id, err := c.s.CreateCard(*b)
+	id, err := c.s.CreateCard(boardId, card)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

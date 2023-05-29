@@ -12,7 +12,7 @@ type BoardService interface {
 	CreateBoard(board.Board) (*board.CreateResponse, error)
 	UpdateBoard(string, board.Board) error
 	DeleteBoard(string) error
-	CreateCard(board.Board) (*board.CreateResponse, error)
+	CreateCard(string, board.Card) (*board.CreateResponse, error)
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
@@ -78,6 +78,7 @@ func (s boardService) DeleteBoard(id string) error {
 	return s.r.Delete(id)
 }
 
-func (s boardService) CreateCard(b board.Board) (*board.CreateResponse, error) {
-	return s.r.CreateCard(b)
+func (s boardService) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
+	card.ID = uuid.NewString()
+	return s.r.CreateCard(boardID, card)
 }

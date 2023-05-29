@@ -99,5 +99,18 @@ func (r BoardRepository) CreateCard(b board.Board) (*board.CreateResponse, error
 		return nil, err
 	}
 
-	return &board.CreateResponse{ID: b.Card[len(b.Card)-1].ID}, nil
+	return &board.CreateResponse{ID: b.Columns[len(b.Columns)-1].ID}, nil
+}
+
+func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
+	// Add to first column as default when creating new card
+	mops := []gocb.MutateInSpec{
+		gocb.ArrayAppendSpec("columns[0].cards", card, nil),
+	}
+	_, err := r.collection.MutateIn(boardID, mops, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return &board.CreateResponse{ID: card.ID}, nil
 }
