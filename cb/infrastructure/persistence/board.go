@@ -92,14 +92,17 @@ func (r BoardRepository) Delete(id string) error {
 	return nil
 }
 
-func (r BoardRepository) CreateCard(b board.Board) (*board.CreateResponse, error) {
-	_, err := r.collection.Upsert(b.ID, b, nil)
+func (r BoardRepository) AddColumnToBoard(boardID string, column board.Column) (*board.CreateResponse, error) {
+	// Append column to column array
+	mops := []gocb.MutateInSpec{
+		gocb.ArrayAppendSpec("columns", column, nil),
+	}
+	_, err := r.collection.MutateIn(boardID, mops, nil)
 	if err != nil {
-		fmt.Println("Failed to create document:", err)
 		return nil, err
 	}
 
-	return &board.CreateResponse{ID: b.Columns[len(b.Columns)-1].ID}, nil
+	return &board.CreateResponse{ID: column.ID}, nil
 }
 
 func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {

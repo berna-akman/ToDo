@@ -15,6 +15,7 @@ type BoardController interface {
 	CreateBoard(e echo.Context) error
 	UpdateBoard(e echo.Context) error
 	DeleteBoard(e echo.Context) error
+	AddColumnToBoard(e echo.Context) error
 	CreateCard(e echo.Context) error
 }
 
@@ -30,6 +31,8 @@ func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardControll
 	e.POST("/cb/board", controller.CreateBoard)
 	e.PUT("/cb/board/:id", controller.UpdateBoard)
 	e.DELETE("/cb/board/:id", controller.DeleteBoard)
+
+	e.POST("/cb/board/:id/column", controller.AddColumnToBoard)
 
 	e.POST("/cb/board/:id/card", controller.CreateCard)
 
@@ -93,6 +96,22 @@ func (c *boardController) DeleteBoard(e echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	return e.JSON(http.StatusOK, nil)
+}
+
+func (c *boardController) AddColumnToBoard(e echo.Context) error {
+	column := board.Column{}
+	err := e.Bind(&column)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	boardId := e.Param("id")
+	id, err := c.s.AddColumnToBoard(boardId, column)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return e.JSON(http.StatusOK, id)
 }
 
 func (c *boardController) CreateCard(e echo.Context) error {
