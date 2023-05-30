@@ -13,6 +13,7 @@ type BoardService interface {
 	UpdateBoard(string, board.Board) error
 	DeleteBoard(string) error
 	AddColumnToBoard(string, board.Column) (*board.CreateResponse, error)
+	RemoveColumnFromBoard(string, string) error
 	CreateCard(string, board.Card) (*board.CreateResponse, error)
 }
 
@@ -83,6 +84,10 @@ func (s boardService) AddColumnToBoard(boardID string, column board.Column) (*bo
 	column.ID = uuid.NewString()
 	column.Cards = make([]board.Card, 0)
 	return s.r.AddColumnToBoard(boardID, column)
+}
+
+func (s boardService) RemoveColumnFromBoard(boardID string, columnID string) error {
+	return s.r.RemoveColumnFromBoard(boardID, columnID)
 }
 
 func (s boardService) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"to-do-api/cb/domain/board"
@@ -33,6 +32,7 @@ func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardControll
 	e.DELETE("/cb/board/:id", controller.DeleteBoard)
 
 	e.POST("/cb/board/:id/column", controller.AddColumnToBoard)
+	e.DELETE("/cb/board/:id/column/:columnId", controller.RemoveColumnFromBoard)
 
 	e.POST("/cb/board/:id/card", controller.CreateCard)
 
@@ -112,6 +112,17 @@ func (c *boardController) AddColumnToBoard(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, id)
+}
+
+func (c *boardController) RemoveColumnFromBoard(e echo.Context) error {
+	boardId := e.Param("id")
+	columnId := e.Param("columnId")
+	err := c.s.RemoveColumnFromBoard(boardId, columnId)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return e.JSON(http.StatusOK, nil)
 }
 
 func (c *boardController) CreateCard(e echo.Context) error {

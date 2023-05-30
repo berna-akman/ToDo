@@ -105,6 +105,37 @@ func (r BoardRepository) AddColumnToBoard(boardID string, column board.Column) (
 	return &board.CreateResponse{ID: column.ID}, nil
 }
 
+func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) error {
+	var doc board.Board
+	result, err := r.collection.Get(boardID, nil)
+	if err != nil {
+		return err
+	}
+
+	if err = result.Content(&doc); err != nil {
+		return err
+	}
+
+	var index int
+	for i, v := range doc.Columns {
+		if v.ID == columnID {
+			index = i
+			break
+		}
+	}
+
+	path := fmt.Sprintf("columns[%d]", index)
+	mops := []gocb.MutateInSpec{
+		gocb.RemoveSpec(path, nil),
+	}
+	_, err = r.collection.MutateIn(boardID, mops, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
 	// Add to first column as default when creating new card
 	mops := []gocb.MutateInSpec{
