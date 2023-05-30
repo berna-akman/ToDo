@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"to-do-api/cb/domain/board"
 	"to-do-api/cb/presentation"
-	"to-do-api/internal/errors"
 )
 
 type BoardController interface {
