@@ -15,6 +15,7 @@ type BoardService interface {
 	AddColumnToBoard(string, board.Column) (*board.CreateResponse, error)
 	RemoveColumnFromBoard(string, string) error
 	CreateCard(string, board.Card) (*board.CreateResponse, error)
+	GetCardsByColumn(string, string) (*[]board.Card, error)
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
@@ -52,15 +53,15 @@ func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) 
 		b.Columns = make([]board.Column, len(defaultColumns))
 		for i := range defaultColumns {
 			column := board.Column{
-				ID:    uuid.NewString(),
-				Name:  defaultColumns[i],
-				Cards: make([]board.Card, 0),
+				ColumnID: uuid.NewString(),
+				Name:     defaultColumns[i],
+				Cards:    make([]board.Card, 0),
 			}
 			b.Columns[i] = column
 		}
 	} else {
 		for i := range b.Columns {
-			b.Columns[i].ID = uuid.NewString()
+			b.Columns[i].ColumnID = uuid.NewString()
 			b.Columns[i].Cards = make([]board.Card, 0)
 		}
 	}
@@ -81,7 +82,7 @@ func (s boardService) DeleteBoard(id string) error {
 }
 
 func (s boardService) AddColumnToBoard(boardID string, column board.Column) (*board.CreateResponse, error) {
-	column.ID = uuid.NewString()
+	column.ColumnID = uuid.NewString()
 	column.Cards = make([]board.Card, 0)
 	return s.r.AddColumnToBoard(boardID, column)
 }
@@ -93,4 +94,8 @@ func (s boardService) RemoveColumnFromBoard(boardID string, columnID string) err
 func (s boardService) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
 	card.ID = uuid.NewString()
 	return s.r.CreateCard(boardID, card)
+}
+
+func (s boardService) GetCardsByColumn(boardID, columnID string) (*[]board.Card, error) {
+	return s.r.GetCardsByColumn(boardID, columnID)
 }

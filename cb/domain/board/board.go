@@ -8,9 +8,9 @@ type Board struct {
 }
 
 type Column struct {
-	ID    string `json:"id"`
-	Name  string `json:"name"`
-	Cards []Card `json:"cards"`
+	ColumnID string `json:"columnId"`
+	Name     string `json:"name"`
+	Cards    []Card `json:"cards"`
 }
 
 type Card struct {

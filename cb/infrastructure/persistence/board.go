@@ -102,7 +102,7 @@ func (r BoardRepository) AddColumnToBoard(boardID string, column board.Column) (
 		return nil, err
 	}
 
-	return &board.CreateResponse{ID: column.ID}, nil
+	return &board.CreateResponse{ID: column.ColumnID}, nil
 }
 
 func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) error {
@@ -118,7 +118,7 @@ func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) 
 
 	var index int
 	for i, v := range doc.Columns {
-		if v.ID == columnID {
+		if v.ColumnID == columnID {
 			index = i
 			break
 		}
@@ -147,4 +147,35 @@ func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.Cre
 	}
 
 	return &board.CreateResponse{ID: card.ID}, nil
+}
+
+func (r BoardRepository) GetCardsByColumn(boardID, columnID string) (*[]board.Card, error) {
+	cards := make([]board.Card, 0)
+	// Default query gets all cards from requested board
+	query := fmt.Sprintf("SELECT c.cards FROM board AS d UNNEST d.columns AS c WHERE d.id = '%s'", boardID)
+	if len(columnID) > 0 {
+		query = "SELECT c.cards FROM board AS d UNNEST d.columns AS c WHERE c.columnId = $columnID"
+	}
+	params := map[string]interface{}{
+		"columnID": columnID,
+	}
+	rows, err := r.cluster.Query(query, &gocb.QueryOptions{NamedParameters: params})
+	if err != nil {
+		return &[]board.Card{}, err
+	}
+
+	defer rows.Close()
+
+	var card struct {
+		Cards []board.Card
+	}
+	for rows.Next() {
+		err = rows.Row(&card)
+		if err != nil {
+			return nil, err
+		}
+		cards = append(cards, card.Cards...)
+	}
+
+	return &cards, nil
 }
