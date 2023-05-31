@@ -96,6 +96,6 @@ func (s boardService) CreateCard(boardID string, card board.Card) (*board.Create
 	return s.r.CreateCard(boardID, card)
 }
 
-func (s boardService) GetCards(boardID, columnID, assignee string) (*[]board.Card, error) {
-	return s.r.GetCards(boardID, columnID, assignee)
+func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
+	return s.r.GetCards(req)
 }

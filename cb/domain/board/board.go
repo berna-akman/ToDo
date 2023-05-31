@@ -23,3 +23,9 @@ type Card struct {
 type CreateResponse struct {
 	ID string `json:"id"`
 }
+
+type GetCardRequest struct {
+	BoardID  string `json:"id"`
+	ColumnID string `json:"columnId"`
+	Assignee string `json:"assignee"`
+}
