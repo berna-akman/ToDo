@@ -8,6 +8,6 @@ type BoardRepository interface {
 	Delete(string) error
 	AddColumnToBoard(string, Column) (*CreateResponse, error)
 	CreateCard(string, Card) (*CreateResponse, error)
-	RemoveColumnFromBoard(string, string) error
+	RemoveColumnFromBoard(DeleteColumnRequest) error
 	GetCards(GetCardRequest) (*[]Card, error)
 }

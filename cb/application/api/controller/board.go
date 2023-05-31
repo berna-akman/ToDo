@@ -116,9 +116,11 @@ func (c *boardController) AddColumnToBoard(e echo.Context) error {
 }
 
 func (c *boardController) RemoveColumnFromBoard(e echo.Context) error {
-	boardId := e.Param("id")
-	columnId := e.Param("columnId")
-	err := c.s.RemoveColumnFromBoard(boardId, columnId)
+	request := &board.DeleteColumnRequest{
+		BoardID:  e.Param("id"),
+		ColumnID: e.Param("columnId"),
+	}
+	err := c.s.RemoveColumnFromBoard(*request)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

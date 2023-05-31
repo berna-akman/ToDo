@@ -105,9 +105,9 @@ func (r BoardRepository) AddColumnToBoard(boardID string, column board.Column) (
 	return &board.CreateResponse{ID: column.ColumnID}, nil
 }
 
-func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) error {
+func (r BoardRepository) RemoveColumnFromBoard(req board.DeleteColumnRequest) error {
 	var doc board.Board
-	result, err := r.collection.Get(boardID, nil)
+	result, err := r.collection.Get(req.BoardID, nil)
 	if err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) 
 
 	var index int
 	for i, v := range doc.Columns {
-		if v.ColumnID == columnID {
+		if v.ColumnID == req.ColumnID {
 			index = i
 			break
 		}
@@ -128,7 +128,7 @@ func (r BoardRepository) RemoveColumnFromBoard(boardID string, columnID string) 
 	mops := []gocb.MutateInSpec{
 		gocb.RemoveSpec(path, nil),
 	}
-	_, err = r.collection.MutateIn(boardID, mops, nil)
+	_, err = r.collection.MutateIn(req.BoardID, mops, nil)
 	if err != nil {
 		return err
 	}

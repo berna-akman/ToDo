@@ -29,3 +29,8 @@ type GetCardRequest struct {
 	ColumnID string `json:"columnId"`
 	Assignee string `json:"assignee"`
 }
+
+type DeleteColumnRequest struct {
+	BoardID  string `json:"id"`
+	ColumnID string `json:"columnId"`
+}
