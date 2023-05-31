@@ -15,7 +15,7 @@ type BoardService interface {
 	AddColumnToBoard(string, board.Column) (*board.CreateResponse, error)
 	RemoveColumnFromBoard(string, string) error
 	CreateCard(string, board.Card) (*board.CreateResponse, error)
-	GetCardsByColumn(string, string) (*[]board.Card, error)
+	GetCards(string, string, string) (*[]board.Card, error)
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
@@ -96,6 +96,6 @@ func (s boardService) CreateCard(boardID string, card board.Card) (*board.Create
 	return s.r.CreateCard(boardID, card)
 }
 
-func (s boardService) GetCardsByColumn(boardID, columnID string) (*[]board.Card, error) {
-	return s.r.GetCardsByColumn(boardID, columnID)
+func (s boardService) GetCards(boardID, columnID, assignee string) (*[]board.Card, error) {
+	return s.r.GetCards(boardID, columnID, assignee)
 }

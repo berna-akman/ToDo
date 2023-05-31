@@ -15,6 +15,7 @@ type BoardController interface {
 	DeleteBoard(e echo.Context) error
 	AddColumnToBoard(e echo.Context) error
 	CreateCard(e echo.Context) error
+	GetCards(e echo.Context) error
 }
 
 type boardController struct {
@@ -34,7 +35,7 @@ func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardControll
 	e.DELETE("/cb/board/:id/column/:columnId", controller.RemoveColumnFromBoard)
 
 	e.POST("/cb/board/:id/card", controller.CreateCard)
-	e.GET("/cb/board/:id/card", controller.GetCardsByColumn)
+	e.GET("/cb/board/:id/card", controller.GetCards)
 
 	return controller
 }
@@ -141,10 +142,11 @@ func (c *boardController) CreateCard(e echo.Context) error {
 	return e.JSON(http.StatusOK, id)
 }
 
-func (c *boardController) GetCardsByColumn(e echo.Context) error {
+func (c *boardController) GetCards(e echo.Context) error {
 	boardID := e.Param("id")
 	columnID := e.QueryParam("columnId")
-	cards, err := c.s.GetCardsByColumn(boardID, columnID)
+	assignee := e.QueryParam("assignee")
+	cards, err := c.s.GetCards(boardID, columnID, assignee)
 	if err != nil {
 		return err
 	}

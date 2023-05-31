@@ -149,32 +149,35 @@ func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.Cre
 	return &board.CreateResponse{ID: card.ID}, nil
 }
 
-func (r BoardRepository) GetCardsByColumn(boardID, columnID string) (*[]board.Card, error) {
+func (r BoardRepository) GetCards(boardID, columnID, assignee string) (*[]board.Card, error) {
 	cards := make([]board.Card, 0)
 	// Default query gets all cards from requested board
-	query := fmt.Sprintf("SELECT c.cards FROM board AS d UNNEST d.columns AS c WHERE d.id = '%s'", boardID)
+	query := fmt.Sprintf("SELECT card.id, card.summary, card.description, card.assignee FROM board b UNNEST b.columns column UNNEST column.cards card WHERE b.id = '%s' ", boardID)
+	// Filter by columnID
 	if len(columnID) > 0 {
-		query = "SELECT c.cards FROM board AS d UNNEST d.columns AS c WHERE c.columnId = $columnID"
+		query = query + "AND column.columnId = $columnID "
+	}
+	// Filter by assignee
+	if len(assignee) > 0 {
+		query = query + "AND card.assignee = $assignee"
 	}
 	params := map[string]interface{}{
 		"columnID": columnID,
+		"assignee": assignee,
 	}
 	rows, err := r.cluster.Query(query, &gocb.QueryOptions{NamedParameters: params})
 	if err != nil {
 		return &[]board.Card{}, err
 	}
 
+	var c board.Card
 	defer rows.Close()
-
-	var card struct {
-		Cards []board.Card
-	}
 	for rows.Next() {
-		err = rows.Row(&card)
+		err = rows.Row(&c)
 		if err != nil {
 			return nil, err
 		}
-		cards = append(cards, card.Cards...)
+		cards = append(cards, c)
 	}
 
 	return &cards, nil

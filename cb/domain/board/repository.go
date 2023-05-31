@@ -9,5 +9,5 @@ type BoardRepository interface {
 	AddColumnToBoard(string, Column) (*CreateResponse, error)
 	CreateCard(string, Card) (*CreateResponse, error)
 	RemoveColumnFromBoard(string, string) error
-	GetCardsByColumn(string, string) (*[]Card, error)
+	GetCards(string, string, string) (*[]Card, error)
 }

@@ -17,6 +17,7 @@ type Card struct {
 	ID          string `json:"id"`
 	Summary     string `json:"summary"`
 	Description string `json:"description"`
+	Assignee    string `json:"assignee"`
 }
 
 type CreateResponse struct {
