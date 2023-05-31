@@ -129,14 +129,14 @@ func (c *boardController) RemoveColumnFromBoard(e echo.Context) error {
 }
 
 func (c *boardController) CreateCard(e echo.Context) error {
-	card := board.Card{}
-	err := e.Bind(&card)
+	request := &board.CreateCardRequest{}
+	err := e.Bind(&request)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	boardId := e.Param("id")
-	id, err := c.s.CreateCard(boardId, card)
+	id, err := c.s.CreateCard(boardId, *request)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

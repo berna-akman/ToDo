@@ -24,6 +24,11 @@ type CreateResponse struct {
 	ID string `json:"id"`
 }
 
+type CreateCardRequest struct {
+	Card     Card   `json:"card"`
+	ColumnID string `json:"columnId"`
+}
+
 type GetCardRequest struct {
 	BoardID  string `json:"id"`
 	ColumnID string `json:"columnId"`

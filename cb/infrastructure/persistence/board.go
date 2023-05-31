@@ -136,17 +136,41 @@ func (r BoardRepository) RemoveColumnFromBoard(req board.DeleteColumnRequest) er
 	return nil
 }
 
-func (r BoardRepository) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
-	// Add to first column as default when creating new card
-	mops := []gocb.MutateInSpec{
-		gocb.ArrayAppendSpec("columns[0].cards", card, nil),
-	}
-	_, err := r.collection.MutateIn(boardID, mops, nil)
+func (r BoardRepository) CreateCard(boardID string, req board.CreateCardRequest) (*board.CreateResponse, error) {
+	var doc board.Board
+	result, err := r.collection.Get(boardID, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return &board.CreateResponse{ID: card.ID}, nil
+	if err = result.Content(&doc); err != nil {
+		return nil, err
+	}
+
+	var index int
+	for i, v := range doc.Columns {
+		if v.ColumnID == req.ColumnID {
+			index = i
+			break
+		}
+	}
+
+	// Add to first column as default when creating new card
+	path := "columns[0].cards"
+	if len(req.ColumnID) > 0 {
+		path = fmt.Sprintf("columns[%d].cards", index)
+	}
+
+	mops := []gocb.MutateInSpec{
+		gocb.ArrayAppendSpec(path, req.Card, nil),
+	}
+
+	_, err = r.collection.MutateIn(boardID, mops, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return &board.CreateResponse{ID: req.Card.ID}, nil
 }
 
 func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, error) {

@@ -14,7 +14,7 @@ type BoardService interface {
 	DeleteBoard(string) error
 	AddColumnToBoard(string, board.Column) (*board.CreateResponse, error)
 	RemoveColumnFromBoard(board.DeleteColumnRequest) error
-	CreateCard(string, board.Card) (*board.CreateResponse, error)
+	CreateCard(string, board.CreateCardRequest) (*board.CreateResponse, error)
 	GetCards(board.GetCardRequest) (*[]board.Card, error)
 }
 
@@ -91,9 +91,9 @@ func (s boardService) RemoveColumnFromBoard(req board.DeleteColumnRequest) error
 	return s.r.RemoveColumnFromBoard(req)
 }
 
-func (s boardService) CreateCard(boardID string, card board.Card) (*board.CreateResponse, error) {
-	card.ID = uuid.NewString()
-	return s.r.CreateCard(boardID, card)
+func (s boardService) CreateCard(boardID string, req board.CreateCardRequest) (*board.CreateResponse, error) {
+	req.Card.ID = uuid.NewString()
+	return s.r.CreateCard(boardID, req)
 }
 
 func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
