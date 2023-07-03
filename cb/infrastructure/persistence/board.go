@@ -210,3 +210,44 @@ func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, erro
 
 	return &cards, nil
 }
+
+func (r BoardRepository) CreateCardAssignee(boardID, cardID string, req board.CreateCardAssigneeRequest) error {
+	var doc board.Board
+	result, err := r.collection.Get(boardID, nil)
+	if err != nil {
+		return err
+	}
+
+	if err = result.Content(&doc); err != nil {
+		return err
+	}
+
+	var cardIndex, colIndex int
+	var found bool
+	for i, v1 := range doc.Columns {
+		if found {
+			break
+		}
+		for j, v2 := range v1.Cards {
+			if v2.ID == cardID {
+				colIndex = i
+				cardIndex = j
+				found = true
+				break
+			}
+		}
+	}
+
+	path := fmt.Sprintf("columns[%d].cards[%d].assignee", colIndex, cardIndex)
+
+	mops := []gocb.MutateInSpec{
+		gocb.UpsertSpec(path, req.Assignee, nil),
+	}
+
+	_, err = r.collection.MutateIn(boardID, mops, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

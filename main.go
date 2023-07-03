@@ -38,11 +38,3 @@ func main() {
 		panic(err)
 	}
 }
-
-// TODO: card board'un bir column'una ait olacak iliskinisi kuralım
-
-// TODO: board id ve column ismi ile ilgili column o boarddan silinsin
-
-// TODO: board'ları column'a gore filtrelemek icin query'den gonder (GET)
-
-// card bucket olustursam olusan uuid'leri board'a verebilir miyim? referans verip iki bucket arasındaki iliskiyi kurabilir miyim?

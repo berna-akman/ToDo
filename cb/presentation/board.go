@@ -3,6 +3,7 @@ package presentation
 import (
 	"github.com/google/uuid"
 	"to-do-api/cb/domain/board"
+	"to-do-api/cb/infrastructure/mq"
 	"to-do-api/internal/errors"
 )
 
@@ -16,12 +17,14 @@ type BoardService interface {
 	RemoveColumnFromBoard(board.DeleteColumnRequest) error
 	CreateCard(string, board.CreateCardRequest) (*board.CreateResponse, error)
 	GetCards(board.GetCardRequest) (*[]board.Card, error)
+	CreateCardAssignee(string, string, board.CreateCardAssigneeRequest) error
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
 
 type boardService struct {
 	r board.BoardRepository
+	// TODO: mq
 }
 
 func NewBoardService(repository board.BoardRepository) BoardService {
@@ -98,4 +101,17 @@ func (s boardService) CreateCard(boardID string, req board.CreateCardRequest) (*
 
 func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
 	return s.r.GetCards(req)
+}
+
+func (s boardService) CreateCardAssignee(boardID, cardID string, req board.CreateCardAssigneeRequest) error {
+	err := s.r.CreateCardAssignee(boardID, cardID, req)
+	if err != nil {
+		return err
+	}
+	// TODO: produce message
+	err = mq.ProduceMessage() // TODO: model, message return etsin err yerine
+	if err != nil {
+		return err
+	}
+	return err
 }

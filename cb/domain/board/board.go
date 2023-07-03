@@ -18,6 +18,7 @@ type Card struct {
 	Summary     string `json:"summary"`
 	Description string `json:"description"`
 	Assignee    string `json:"assignee"`
+	Email       string `json:"email"`
 }
 
 type CreateResponse struct {
@@ -27,6 +28,10 @@ type CreateResponse struct {
 type CreateCardRequest struct {
 	Card     Card   `json:"card"`
 	ColumnID string `json:"columnId"`
+}
+
+type CreateCardAssigneeRequest struct {
+	Assignee string `json:"assignee"`
 }
 
 type GetCardRequest struct {

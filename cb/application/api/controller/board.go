@@ -36,6 +36,7 @@ func NewBoardController(s presentation.BoardService, e *echo.Echo) BoardControll
 
 	e.POST("/cb/board/:id/card", controller.CreateCard)
 	e.GET("/cb/board/:id/card", controller.GetCards)
+	e.POST("/cb/board/:id/card/:cardId/assignee", controller.CreateCardAssignee)
 
 	return controller
 }
@@ -156,4 +157,20 @@ func (c *boardController) GetCards(e echo.Context) error {
 	}
 
 	return e.JSON(http.StatusOK, cards)
+}
+
+func (c *boardController) CreateCardAssignee(e echo.Context) error {
+	request := &board.CreateCardAssigneeRequest{}
+	err := e.Bind(&request)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	boardId := e.Param("id")
+	cardId := e.Param("cardId")
+	err = c.s.CreateCardAssignee(boardId, cardId, *request)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return e.JSON(http.StatusOK, nil)
 }

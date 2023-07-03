@@ -11,6 +11,7 @@ require (
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.15.0
+	github.com/streadway/amqp v1.1.0
 	github.com/stretchr/testify v1.8.2
 	gorm.io/driver/postgres v1.4.6
 	gorm.io/gorm v1.24.2
