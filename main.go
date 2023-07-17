@@ -11,6 +11,8 @@ import (
 	_ "to-do-api/pg/presentation"
 )
 
+var userMap map[string]string
+
 func main() {
 
 	/*cfg, err := config.InitConfig()
@@ -32,7 +34,12 @@ func main() {
 	boardRepositoryCB := persistence.NewBoardRepository(cb)
 	userRepositoryCB := persistence.NewUserRepository(cb)
 	userServiceCB := presentation.NewUserService(userRepositoryCB)
-	boardServiceCB := presentation.NewBoardService(boardRepositoryCB)
+	userMap, err = getUserIDNameMap(userServiceCB)
+	if err != nil {
+		panic(err)
+	}
+	// TODO: investigate why userMap not applied after defining boardServiceCB
+	boardServiceCB := presentation.NewBoardService(boardRepositoryCB, userMap)
 	controller.NewBoardController(boardServiceCB, e)
 	controller.NewUserController(userServiceCB, e)
 
@@ -40,4 +47,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getUserIDNameMap(s presentation.UserService) (map[string]string, error) {
+	users, err := s.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	userMap = make(map[string]string)
+	for _, v := range *users {
+		userMap[v.ID] = v.Name
+	}
+
+	return userMap, nil
 }

@@ -23,12 +23,13 @@ type BoardService interface {
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
 
 type boardService struct {
-	r board.BoardRepository
+	r       board.BoardRepository
+	userMap map[string]string
 	// TODO: mq
 }
 
-func NewBoardService(repository board.BoardRepository) BoardService {
-	return boardService{repository}
+func NewBoardService(repository board.BoardRepository, userMap map[string]string) BoardService {
+	return boardService{repository, userMap}
 }
 
 func (s boardService) GetAllBoards() (*[]board.Board, error) {
@@ -100,7 +101,16 @@ func (s boardService) CreateCard(boardID string, req board.CreateCardRequest) (*
 }
 
 func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
-	return s.r.GetCards(req)
+	cards, err := s.r.GetCards(req)
+	userMap := s.userMap
+	var cardsWithUsers []board.Card
+	// Get Cards if and only if assigneeId has a name map
+	for _, v := range *cards {
+		if len(userMap[v.AssigneeID]) > 0 {
+			cardsWithUsers = append(cardsWithUsers, v)
+		}
+	}
+	return &cardsWithUsers, err
 }
 
 func (s boardService) CreateCardAssignee(boardID, cardID string, req board.CreateCardAssigneeRequest) error {
