@@ -30,8 +30,11 @@ func main() {
 	e := echo.New()
 	cb, err := persistence.ConnectCB()
 	boardRepositoryCB := persistence.NewBoardRepository(cb)
+	userRepositoryCB := persistence.NewUserRepository(cb)
+	userServiceCB := presentation.NewUserService(userRepositoryCB)
 	boardServiceCB := presentation.NewBoardService(boardRepositoryCB)
 	controller.NewBoardController(boardServiceCB, e)
+	controller.NewUserController(userServiceCB, e)
 
 	err = e.Start(":8080")
 	if err != nil {
