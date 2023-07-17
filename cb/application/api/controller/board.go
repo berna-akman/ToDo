@@ -147,9 +147,9 @@ func (c *boardController) CreateCard(e echo.Context) error {
 
 func (c *boardController) GetCards(e echo.Context) error {
 	request := &board.GetCardRequest{
-		BoardID:  e.Param("id"),
-		ColumnID: e.QueryParam("columnId"),
-		Assignee: e.QueryParam("assignee"),
+		BoardID:    e.Param("id"),
+		ColumnID:   e.QueryParam("columnId"),
+		AssigneeID: e.QueryParam("assigneeId"),
 	}
 	cards, err := c.s.GetCards(*request)
 	if err != nil {

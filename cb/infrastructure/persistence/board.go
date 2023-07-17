@@ -176,7 +176,7 @@ func (r BoardRepository) CreateCard(boardID string, req board.CreateCardRequest)
 func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
 	cards := make([]board.Card, 0)
 	// Default query gets all cards from requested board
-	query := fmt.Sprintf("SELECT card.id, card.summary, card.description, card.assignee FROM board b UNNEST b.columns column UNNEST column.cards card WHERE b.id = '%s' ", req.BoardID)
+	query := fmt.Sprintf("SELECT card.id, card.summary, card.description, card.assigneeId FROM board b UNNEST b.columns column UNNEST column.cards card WHERE b.id = '%s' ", req.BoardID)
 
 	// Filter by columnID
 	if len(req.ColumnID) > 0 {
@@ -184,13 +184,13 @@ func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, erro
 	}
 
 	// Filter by assignee
-	if len(req.Assignee) > 0 {
-		query = query + "AND card.assignee = $assignee"
+	if len(req.AssigneeID) > 0 {
+		query = query + "AND card.assigneeId = $assigneeID"
 	}
 
 	params := map[string]interface{}{
-		"columnID": req.ColumnID,
-		"assignee": req.Assignee,
+		"columnID":   req.ColumnID,
+		"assigneeID": req.AssigneeID,
 	}
 
 	rows, err := r.cluster.Query(query, &gocb.QueryOptions{NamedParameters: params})
@@ -238,10 +238,10 @@ func (r BoardRepository) CreateCardAssignee(boardID, cardID string, req board.Cr
 		}
 	}
 
-	path := fmt.Sprintf("columns[%d].cards[%d].assignee", colIndex, cardIndex)
+	path := fmt.Sprintf("columns[%d].cards[%d].assigneeId", colIndex, cardIndex)
 
 	mops := []gocb.MutateInSpec{
-		gocb.UpsertSpec(path, req.Assignee, nil),
+		gocb.UpsertSpec(path, req.AssigneeID, nil),
 	}
 
 	_, err = r.collection.MutateIn(boardID, mops, nil)

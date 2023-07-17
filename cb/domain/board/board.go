@@ -17,7 +17,7 @@ type Card struct {
 	ID          string `json:"id"`
 	Summary     string `json:"summary"`
 	Description string `json:"description"`
-	Assignee    string `json:"assignee"`
+	AssigneeID  string `json:"assigneeId"`
 	Email       string `json:"email"`
 }
 
@@ -31,13 +31,13 @@ type CreateCardRequest struct {
 }
 
 type CreateCardAssigneeRequest struct {
-	Assignee string `json:"assignee"`
+	AssigneeID string `json:"assigneeId"`
 }
 
 type GetCardRequest struct {
-	BoardID  string `json:"id"`
-	ColumnID string `json:"columnId"`
-	Assignee string `json:"assignee"`
+	BoardID    string `json:"id"`
+	ColumnID   string `json:"columnId"`
+	AssigneeID string `json:"assigneeId"`
 }
 
 type DeleteColumnRequest struct {
