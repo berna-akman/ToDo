@@ -17,7 +17,7 @@ type BoardService interface {
 	RemoveColumnFromBoard(board.DeleteColumnRequest) error
 	CreateCard(string, board.CreateCardRequest) (*board.CreateResponse, error)
 	GetCards(board.GetCardRequest) (*[]board.Card, error)
-	CreateCardAssignee(string, string, board.CreateCardAssigneeRequest) error
+	CreateCardAssignee(board.CreateCardAssigneeRequest) error
 }
 
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
@@ -113,8 +113,8 @@ func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) 
 	return &cardsWithUsers, err
 }
 
-func (s boardService) CreateCardAssignee(boardID, cardID string, req board.CreateCardAssigneeRequest) error {
-	err := s.r.CreateCardAssignee(boardID, cardID, req)
+func (s boardService) CreateCardAssignee(req board.CreateCardAssigneeRequest) error {
+	err := s.r.CreateCardAssignee(req)
 	if err != nil {
 		return err
 	}

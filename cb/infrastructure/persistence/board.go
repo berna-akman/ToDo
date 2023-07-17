@@ -211,9 +211,9 @@ func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, erro
 	return &cards, nil
 }
 
-func (r BoardRepository) CreateCardAssignee(boardID, cardID string, req board.CreateCardAssigneeRequest) error {
+func (r BoardRepository) CreateCardAssignee(req board.CreateCardAssigneeRequest) error {
 	var doc board.Board
-	result, err := r.collection.Get(boardID, nil)
+	result, err := r.collection.Get(req.BoardID, nil)
 	if err != nil {
 		return err
 	}
@@ -229,7 +229,7 @@ func (r BoardRepository) CreateCardAssignee(boardID, cardID string, req board.Cr
 			break
 		}
 		for j, v2 := range v1.Cards {
-			if v2.ID == cardID {
+			if v2.ID == req.CardID {
 				colIndex = i
 				cardIndex = j
 				found = true
@@ -244,7 +244,7 @@ func (r BoardRepository) CreateCardAssignee(boardID, cardID string, req board.Cr
 		gocb.UpsertSpec(path, req.AssigneeID, nil),
 	}
 
-	_, err = r.collection.MutateIn(boardID, mops, nil)
+	_, err = r.collection.MutateIn(req.BoardID, mops, nil)
 	if err != nil {
 		return err
 	}

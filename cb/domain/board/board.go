@@ -31,6 +31,8 @@ type CreateCardRequest struct {
 }
 
 type CreateCardAssigneeRequest struct {
+	BoardID    string `json:"id"`
+	CardID     string `json:"cardId"`
 	AssigneeID string `json:"assigneeId"`
 }
 

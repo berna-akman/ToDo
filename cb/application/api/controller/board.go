@@ -16,6 +16,7 @@ type BoardController interface {
 	AddColumnToBoard(e echo.Context) error
 	CreateCard(e echo.Context) error
 	GetCards(e echo.Context) error
+	CreateCardAssignee(e echo.Context) error
 }
 
 type boardController struct {
@@ -160,15 +161,17 @@ func (c *boardController) GetCards(e echo.Context) error {
 }
 
 func (c *boardController) CreateCardAssignee(e echo.Context) error {
-	request := &board.CreateCardAssigneeRequest{}
+	request := &board.CreateCardAssigneeRequest{
+		BoardID:    e.Param("id"),
+		CardID:     e.Param("cardId"),
+		AssigneeID: e.QueryParam("assigneeId"),
+	}
 	err := e.Bind(&request)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	boardId := e.Param("id")
-	cardId := e.Param("cardId")
-	err = c.s.CreateCardAssignee(boardId, cardId, *request)
+	err = c.s.CreateCardAssignee(*request)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
