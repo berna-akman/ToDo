@@ -10,5 +10,5 @@ type BoardRepository interface {
 	CreateCard(string, CreateCardRequest) (*CreateResponse, error)
 	RemoveColumnFromBoard(DeleteColumnRequest) error
 	GetCards(GetCardRequest) (*[]Card, error)
-	CreateCardAssignee(CreateCardAssigneeRequest) error
+	CreateCardAssignee(CreateCardAssigneeRequest) (string, error)
 }

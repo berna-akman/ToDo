@@ -3,6 +3,7 @@ package presentation
 import (
 	"github.com/google/uuid"
 	"to-do-api/cb/domain/board"
+	"to-do-api/cb/domain/user"
 	"to-do-api/cb/infrastructure/mq"
 	"to-do-api/internal/errors"
 )
@@ -23,17 +24,18 @@ type BoardService interface {
 var defaultColumns = []string{"To Do", "In Progress", "In Test", "Done"}
 
 type boardService struct {
-	r       board.BoardRepository
-	userMap map[string]string
+	boardRepository board.BoardRepository
+	userRepository  user.UserRepository
+	userMap         map[string]string
 	// TODO: mq
 }
 
-func NewBoardService(repository board.BoardRepository, userMap map[string]string) BoardService {
-	return boardService{repository, userMap}
+func NewBoardService(boardRepository board.BoardRepository, userRepository user.UserRepository, userMap map[string]string) BoardService {
+	return boardService{boardRepository: boardRepository, userRepository: userRepository, userMap: userMap}
 }
 
 func (s boardService) GetAllBoards() (*[]board.Board, error) {
-	boards, err := s.r.FindAll()
+	boards, err := s.boardRepository.FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +44,7 @@ func (s boardService) GetAllBoards() (*[]board.Board, error) {
 }
 
 func (s boardService) GetBoardByID(id string) (*board.Board, error) {
-	b, err := s.r.GetByID(id)
+	b, err := s.boardRepository.GetByID(id)
 	if err != nil {
 		return nil, errors.ErrorBoardNotFound
 	}
@@ -70,38 +72,38 @@ func (s boardService) CreateBoard(b board.Board) (*board.CreateResponse, error) 
 		}
 	}
 
-	return s.r.CreateBoard(b)
+	return s.boardRepository.CreateBoard(b)
 }
 
 func (s boardService) UpdateBoard(boardID string, b board.Board) error {
-	return s.r.Update(boardID, b)
+	return s.boardRepository.Update(boardID, b)
 }
 
 func (s boardService) DeleteBoard(id string) error {
-	_, err := s.r.GetByID(id)
+	_, err := s.boardRepository.GetByID(id)
 	if err != nil {
 		return errors.ErrorBoardNotFound
 	}
-	return s.r.Delete(id)
+	return s.boardRepository.Delete(id)
 }
 
 func (s boardService) AddColumnToBoard(boardID string, column board.Column) (*board.CreateResponse, error) {
 	column.ColumnID = uuid.NewString()
 	column.Cards = make([]board.Card, 0)
-	return s.r.AddColumnToBoard(boardID, column)
+	return s.boardRepository.AddColumnToBoard(boardID, column)
 }
 
 func (s boardService) RemoveColumnFromBoard(req board.DeleteColumnRequest) error {
-	return s.r.RemoveColumnFromBoard(req)
+	return s.boardRepository.RemoveColumnFromBoard(req)
 }
 
 func (s boardService) CreateCard(boardID string, req board.CreateCardRequest) (*board.CreateResponse, error) {
 	req.Card.ID = uuid.NewString()
-	return s.r.CreateCard(boardID, req)
+	return s.boardRepository.CreateCard(boardID, req)
 }
 
 func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
-	cards, err := s.r.GetCards(req)
+	cards, err := s.boardRepository.GetCards(req)
 	userMap := s.userMap
 	var cardsWithUsers []board.Card
 	// Get Cards if and only if assigneeId has a name map
@@ -114,7 +116,10 @@ func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) 
 }
 
 func (s boardService) CreateCardAssignee(req board.CreateCardAssigneeRequest) error {
-	err := s.r.CreateCardAssignee(req)
+	cardId, err := s.boardRepository.CreateCardAssignee(req)
+	u, err := s.userRepository.GetByID(req.AssigneeID)
+	err = s.userRepository.AddCardIdToUser(u.ID, cardId)
+
 	if err != nil {
 		return err
 	}

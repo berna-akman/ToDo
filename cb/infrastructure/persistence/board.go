@@ -211,15 +211,15 @@ func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, erro
 	return &cards, nil
 }
 
-func (r BoardRepository) CreateCardAssignee(req board.CreateCardAssigneeRequest) error {
+func (r BoardRepository) CreateCardAssignee(req board.CreateCardAssigneeRequest) (string, error) {
 	var doc board.Board
 	result, err := r.collection.Get(req.BoardID, nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if err = result.Content(&doc); err != nil {
-		return err
+		return "", err
 	}
 
 	var cardIndex, colIndex int
@@ -246,8 +246,8 @@ func (r BoardRepository) CreateCardAssignee(req board.CreateCardAssigneeRequest)
 
 	_, err = r.collection.MutateIn(req.BoardID, mops, nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return req.CardID, nil
 }

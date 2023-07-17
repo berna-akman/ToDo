@@ -39,7 +39,7 @@ func main() {
 		panic(err)
 	}
 	// TODO: investigate why userMap not applied after defining boardServiceCB
-	boardServiceCB := presentation.NewBoardService(boardRepositoryCB, userMap)
+	boardServiceCB := presentation.NewBoardService(boardRepositoryCB, userRepositoryCB, userMap)
 	controller.NewBoardController(boardServiceCB, e)
 	controller.NewUserController(userServiceCB, e)
 
