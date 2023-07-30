@@ -110,6 +110,7 @@ func (s boardService) GetCards(req board.GetCardRequest) (*[]board.Card, error) 
 	for _, v := range *cards {
 		if len(userMap[v.AssigneeID]) > 0 {
 			cardsWithUsers = append(cardsWithUsers, v)
+			// TODO: bulamazsa db'ye gitsin
 		}
 	}
 	return &cardsWithUsers, err

@@ -176,21 +176,23 @@ func (r BoardRepository) CreateCard(boardID string, req board.CreateCardRequest)
 func (r BoardRepository) GetCards(req board.GetCardRequest) (*[]board.Card, error) {
 	cards := make([]board.Card, 0)
 	// Default query gets all cards from requested board
-	query := fmt.Sprintf("SELECT card.id, card.summary, card.description, card.assigneeId FROM board b UNNEST b.columns column UNNEST column.cards card WHERE b.id = '%s' ", req.BoardID)
+	query := "SELECT card.id, card.summary, card.description, card.assigneeId FROM board b UNNEST b.columns column UNNEST column.cards card WHERE b.id = $boardID"
+
+	// Create a map for named parameters
+	params := map[string]interface{}{
+		"boardID": req.BoardID,
+	}
 
 	// Filter by columnID
 	if len(req.ColumnID) > 0 {
-		query = query + "AND column.columnId = $columnID "
+		query = query + " AND column.columnId = $columnID"
+		params["columnID"] = req.ColumnID
 	}
 
 	// Filter by assignee
 	if len(req.AssigneeID) > 0 {
-		query = query + "AND card.assigneeId = $assigneeID"
-	}
-
-	params := map[string]interface{}{
-		"columnID":   req.ColumnID,
-		"assigneeID": req.AssigneeID,
+		query = query + " AND card.assigneeId = $assigneeID"
+		params["assigneeID"] = req.AssigneeID
 	}
 
 	rows, err := r.cluster.Query(query, &gocb.QueryOptions{NamedParameters: params})
