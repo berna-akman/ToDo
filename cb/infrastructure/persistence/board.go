@@ -147,19 +147,18 @@ func (r BoardRepository) CreateCard(boardID string, req board.CreateCardRequest)
 		return nil, err
 	}
 
-	var index int
-	for i, v := range doc.Columns {
-		if v.ColumnID == req.ColumnID {
-			index = i
-			break
+	// Add to first column as default when creating new card
+	var index = 0
+	if len(req.ColumnID) > 0 {
+		for i, v := range doc.Columns {
+			if v.ColumnID == req.ColumnID {
+				index = i
+				break
+			}
 		}
 	}
 
-	// Add to first column as default when creating new card
-	path := "columns[0].cards"
-	if len(req.ColumnID) > 0 {
-		path = fmt.Sprintf("columns[%d].cards", index)
-	}
+	path := fmt.Sprintf("columns[%d].cards", index)
 
 	mops := []gocb.MutateInSpec{
 		gocb.ArrayAppendSpec(path, req.Card, nil),
